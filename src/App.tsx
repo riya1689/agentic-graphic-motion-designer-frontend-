@@ -133,6 +133,15 @@ export default function App() {
         setActiveConversationId,
     ] = useState<string | null>(null);
 
+    const handleAuthenticatedLogin = (user: AuthUser) => {
+        // Never carry an admin-only view into the next session. The same
+        // desktop window can be used first by an admin and then by a client.
+        setAdminDashboardOpen(false);
+        setIconLibraryOpen(false);
+        setSettingsOpen(false);
+        setAuthUser(user);
+    };
+
 
 
     // ========================================
@@ -720,7 +729,7 @@ export default function App() {
     }
 
     if (!authUser) {
-        return <LoginPage onLogin={setAuthUser} />;
+        return <LoginPage onLogin={handleAuthenticatedLogin} />;
     }
 
     return (
@@ -737,6 +746,9 @@ export default function App() {
                 }
                 onLogout={async () => {
                     await logout();
+                    setAdminDashboardOpen(false);
+                    setIconLibraryOpen(false);
+                    setSettingsOpen(false);
                     setAuthUser(null);
                 }}
             />
